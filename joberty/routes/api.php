@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\CompanyAdvertisementController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserAdvertisementController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -23,8 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
-//Route::get('/users/{id}/advertisements', [UserAdvertisementController::class, 'index'])->name('users.advertisements.index');
+Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
+Route::get('/companies/{id}', [CompanyController::class, 'show'])->name('companies.show');
 
 Route::resource('advertisements', AdvertisementController::class);
 Route::resource('users.advertisements', UserAdvertisementController::class)->only(['index']);
+Route::resource('companies.advertisements', CompanyAdvertisementController::class)->only(['index']);
 
