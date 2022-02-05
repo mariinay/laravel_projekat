@@ -6,6 +6,8 @@ use App\Http\Resources\AdvertisementCollection;
 use App\Http\Resources\AdvertisementResource;
 use App\Models\Advertisement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AdvertisementController extends Controller
 {
@@ -38,7 +40,26 @@ class AdvertisementController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'position' => 'required|string|max:50',
+            'description' => 'string|max:255',
+            'company_id' => 'required',
+            'category_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $advertisement = Advertisement::create([
+            'position' => $request->position,
+            'description' => $request->description,
+            'company_id' => $request->company_id,
+            'category_id' => $request->category_id,
+            'user_id' => Auth::user()->id
+        ]);
+
+        return response()->json(['Advertisement created successfully.', new AdvertisementResource($advertisement)]);
     }
 
     /**
@@ -72,7 +93,25 @@ class AdvertisementController extends Controller
      */
     public function update(Request $request, Advertisement $advertisement)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'position' => 'required|string|max:50',
+            'description' => 'string|max:255',
+            'company_id' => 'required',
+            'category_id' => 'required'
+        ]);
+
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+
+        $advertisement->position = $request->position;
+        $advertisement->description = $request->description;
+        $advertisement->company_id = $request->company_id;
+        $advertisement->category_id = $request->category_id;
+
+        $advertisement->save();
+
+        return response()->json(['Advertisement updated successfully.', new AdvertisementResource($advertisement)]);
     }
 
     /**
@@ -83,6 +122,7 @@ class AdvertisementController extends Controller
      */
     public function destroy(Advertisement $advertisement)
     {
-        //
+        $advertisement->delete();
+        return response()->json('Advertisement deleted successfully.');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\CompanyAdvertisementController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserAdvertisementController;
@@ -28,7 +29,21 @@ Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
 Route::get('/companies/{id}', [CompanyController::class, 'show'])->name('companies.show');
 
-Route::resource('advertisements', AdvertisementController::class);
+Route::resource('advertisements', AdvertisementController::class)->only('index');
+
+
 Route::resource('users.advertisements', UserAdvertisementController::class)->only(['index']);
+
 Route::resource('companies.advertisements', CompanyAdvertisementController::class)->only(['index']);
 
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile', function (Request $request) {
+        return auth()->user();
+    });
+    Route::resource('advertisements', AdvertisementController::class)->only(['store', 'destroy']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+});

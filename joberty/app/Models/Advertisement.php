@@ -9,13 +9,10 @@ class Advertisement extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'position',
-        'company',
-        'description'
-    ];
+    protected $guarded = [];
 
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
