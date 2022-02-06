@@ -91,8 +91,10 @@ class AdvertisementController extends Controller
      * @param  \App\Models\Advertisement  $advertisement
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Advertisement $advertisement)
+    public function update(Request $request, $id)
     {
+        $advertisement = Advertisement::find($id);
+
         $validator = Validator::make($request->all(), [
             'position' => 'required|string|max:50',
             'description' => 'string|max:255',
